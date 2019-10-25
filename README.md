@@ -223,8 +223,8 @@ In ASP.net Core we provide the following objects:
 
    1. GridLineConfig that holds the responsibility when serialized to generate a configuration. A GridLineConfig is a set of GridLineColumns.
    2. GridLineColumn that holds the responsibility to configure the type (Standard, CheckT). A GridLineColumn is composed of one or more fields.
-   2. GridLineField that hodls the responsibility to define a field.
-   A shortexample belo
+   2. GridLineField that holds the responsibility to define a field.
+   A shortexample below
 ```c#
  var config = new GridLineConfig
             {
