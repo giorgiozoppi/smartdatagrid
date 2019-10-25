@@ -2,25 +2,25 @@
 
 We extend Syncfusion Essential2.js Grid to created an enhanced grid component (EGC) that shall meet the following requirements:
 
-1.  The component shall be able to be generated from a JSON description.
-2.  The JSON provided as input state should be used to generate columns and apply formulas to the columns. 
-3.  The component shall be able to generate a text/numeric/datatime/boolean column
-4.  The component shall be able to generate a checkbox column.
-5.  The component shall be able to generate a selection columns with multiple values.
-6.  The component shall be able to generate three coupled columns in which the last is a button, we call this triplecol.
-7.  The triplecol shall be able to raise a modal with a grid component inside using data provided via a ODATA/REST API and select a value from the grid.
-8.  The component works in two ways: editMode and selectionMode.
-9.  The component shall be able do cut and paste as it were a text editor.
+1. The component shall be able to be generated from a JSON description.
+2. The JSON provided as input state should be used to generate columns and apply formulas to the columns. 
+3. The component shall be able to generate a text/numeric/datatime/boolean column
+4. The component shall be able to generate a checkbox column.
+5. The component shall be able to generate a selection columns with multiple values.
+6. The component shall be able to generate three coupled columns in which the last is a button, we call this triplecol.
+7. The triplecol shall be able to raise a modal with a grid component inside using data provided via a ODATA/REST API and select a value from the grid.
+8. The component works in two ways: editMode and selectionMode.
+9. The component shall be able do cut and paste as it were a text editor.
 10. The JSON description should be able to be mark column readonly.
 11. The component shall use keywords: 
-         * CTRL+C (copy), CTRL+V(paste), CTRL+X (cut)
-         * CTRL+space (pass from SelectionMode to EditMode),
-         * Ins (insertion to top), space for selecting a checkbox.
-         * Del (delete current row)
+..* CTRL+C (copy), CTRL+V(paste), CTRL+X (cut)
+..* CTRL+space (pass from SelectionMode to EditMode),
+..* Ins (insertion to top), space for selecting a checkbox.
+..* Del (delete current row)
 12. The component shall be able resolve in the triplecall(see point 6), from the first textbox all the remaining parts.
 13. The component should apply the provided formulas when passing to editMode to selectionMode
 14. The JSON description provides the description to columns and a formula to apply to the columns.
-15. The component generated shall be able to save its columns positions and size to the configuration service (grpc.fleetadmiral.net)
+15. The component generated shall be able to save its columns positions and size to the configuration service via Google RPC (grpc.fleetadmiral.net)
 
 
 # Column types
