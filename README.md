@@ -55,6 +55,7 @@ A comprensive example of different columns is below.
              "Header":"Unknown",
              "DataType":"string",
              "Width":null,
+             "Hidden": false,
              "Format":null,
              "SelectionValues":null
           }
@@ -87,6 +88,7 @@ A comprensive example of different columns is below.
                       "Header":"Unknown",
                       "DataType":"string",
                       "Width":null,
+                      "Hidden": false,
                       "Format":null,
                       "SelectionValues":null
                    },
@@ -95,6 +97,7 @@ A comprensive example of different columns is below.
                       "Header":"Unknown",
                       "DataType":"string",
                       "Width":null,
+                      "Hidden": false,
                       "Format":null,
                       "SelectionValues":null
                    }
@@ -109,6 +112,7 @@ A comprensive example of different columns is below.
              "Header":"Cod.Concepto",
              "DataType":"string",
              "Width":null,
+             "Hidden": false,
              "Format":null,
              "SelectionValues":null
           },
@@ -117,6 +121,7 @@ A comprensive example of different columns is below.
              "Header":"Nombre Concepto",
              "DataType":"string",
              "Width":null,
+             "Hidden": false,
              "Format":null,
              "SelectionValues":null
           }
@@ -138,6 +143,7 @@ A comprensive example of different columns is below.
              "Header":"Unknown",
              "DataType":"boolean",
              "Width":null,
+             "Hidden": false,
              "Format":null,
              "SelectionValues":null
           }
