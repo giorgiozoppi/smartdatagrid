@@ -228,7 +228,7 @@ In ASP.net Core we provide the following objects:
 ```c#
  var config = new GridLineConfig
             {
-               Formula = "min mul 7 8 percent 10 min mul 7 8"
+               Formula = "((1 * 2) - (10 % (1-2)))"
                Columns = new List<GridLineColumn>()
             {
                 new GridLineColumn()
