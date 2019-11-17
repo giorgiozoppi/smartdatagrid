@@ -14,6 +14,10 @@
 */
 import * as React from 'react';
 import AbstractColumnFactory from './AbstractColumnFactory.js'
+import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
+import GridSettingSaver from './GridSettingSaver.js'
+import GridSettingLoader from './GridSettingLoader.js'
+import { ToastComponent } from '@syncfusion/ej2-react-notifications';
 import { DataManager, ODataV4Adaptor } from '@syncfusion/ej2-data';
 import {
     GridComponent,
@@ -23,23 +27,26 @@ import {
     Selection,
     Page,
     Reorder,
-    Resize,
-    AggregatesDirective
+    Resize
 } from '@syncfusion/ej2-react-grids';
 class ExtendedGridMagnifier extends React.Component 
 {
-
+    
     constructor(props) {
         super(props)
-        this.state = {
-            data: new DataManager({
+       
+        this.state = { data: new DataManager({
                 url: this.props.webserviceUri,
                 adaptor: new ODataV4Adaptor,
                 crossDomain: true
             }),
+            cid: this.props.cid,
             columns : [],
             name: this.props.name,
-            webservice: this.props.webserviceUri
+            webservice: this.props.webserviceUri,
+            grpcGateway: this.props.grpcGateway,
+            currentUser: this.props.currentUser,
+            grpcToken: this.props.grpcToken
         };
         this.lastRowSelected = 0
         this.factory = new AbstractColumnFactory()
@@ -47,22 +54,36 @@ class ExtendedGridMagnifier extends React.Component
         this.dataStateChange = this.dataStateChange.bind(this);
         this.renderComplete = this.renderComplete.bind(this)
         this.createColumns = this.createColumns.bind(this);
-        this.createColumns(this.props.columns[0])
-        this.filterSettings = { type: 'Menu' }
+        this.state.columns = this.createColumns(this.props.columns[0])
+        this.filterOptions = { type: 'Menu' }
+        this.toastPosition = { X: 'Right' }
+      
+        this.saveGridSettings = this.saveGridSettings.bind(this)
+        this.loadGridSettings = this.loadGridSettings.bind(this)
+        this.gridSaver = new GridSettingSaver(this.state.grpcGateway, this.state.currentUser, this.state.grpcToken);
+        this.gridLoader = new GridSettingLoader(this.state.grpcGateway, this.state.currentUser, this.state.grpcToken);
         
     }
     createColumns(columns) {
         let gridColumns = columns.Fields
-        console.log("Grid Columns"+JSON.stringify(gridColumns))
         let idx = 0
         let currentCols = []
         gridColumns.forEach(col => {
             // we suppose that we have just Field Columns
             let column = this.factory.createColumn('Field', idx, col, () => {})
+            if (col.DataType === "date")
+            {
+                if (this.columnsReformat == null) {
+                    this.columnsReformat = [{ 'col': idx, 'format': col.Format }]
+                } else {
+                    this.columnsReformat.push({ 'col': idx, 'format': col.Format })
+                }
+            }
+            console.log(JSON.stringify("col "+col))
             idx++
             currentCols.push(column)
         })
-        this.setState({ columns: currentCols})
+        return currentCols;
     }
     renderComplete() {
         this.dataStateChange(this.state.data)
@@ -75,9 +96,17 @@ class ExtendedGridMagnifier extends React.Component
 
     loadDefault(ev)
     {
-        if (this.gridInstance!=null) {
-            console.log("Registering keydown and key up")
-            this.gridInstance.element.addEventListener('keydown', this.keyPressHandler.bind(this)) };
+       
+        if (this.grid!=null) {
+            this.grid.element.addEventListener('keydown', this.keyPressHandler.bind(this)) };
+        if (this.columnsReformat != null) {
+            this.columnsReformat.forEach(colFormat => {
+                if (colFormat !== null) {
+                    this.grid.columns[colFormat.col].format = { type: 'date', format: colFormat.format }
+
+                }
+            }) 
+        }
 
     }
     keyPressHandler(args)
@@ -103,15 +132,21 @@ class ExtendedGridMagnifier extends React.Component
             }
         }
     }
+    onToastClose(args) {
+        let btnEleHide = document.getElementById('toastBtnExtendedHide')
+        if (e.toastContainer.childElementCount === 0) {
+            btnEleHide.style.display = 'none'
+        }
+    }
     rowSelected(ev) {
        
         let selectedrecords = null;
         if (this.grid) {
             /** Get the selected records. */
             selectedrecords = this.grid.getSelectedRecords();
-            this.props.selectionEvent(selectedrecords)
+            this.props.selectionEvent({ 'id': this.state.cid, 'rows': selectedrecords })
         }
-        console.log("Call select")
+       
         return selectedrecords;
     }
     componentWillReceiveProps(nextProps) {
@@ -123,32 +158,92 @@ class ExtendedGridMagnifier extends React.Component
     }
     rowDoubleClick(ev) {
 
-        console.log("Selected records " + JSON.stringify(ev))
         let selectedrecords = null;
         if (this.grid) {
             /** Get the selected records. */
             selectedrecords = this.grid.getSelectedRecords();
-            console.log("Selected records "+ JSON.stringify(selectedrecords))
-            this.props.selectionEvent(selectedrecords)
+            this.props.selectionEvent({ 'id': this.state.cid, 'rows': selectedrecords })
         }
     }
+    loadGridSettings() {
+
+    }
+    async saveGridSettings() {
+        event.preventDefault();
+        let gridId = this.state.id;
+        if (gridId == null)
+        {
+            throw 'Grid identifier should defined'
+        }
+        try 
+        {
+            await this.gridSaver.saveGridAsync(gridId, this.gridInstance);
+            this.notifySuccessToastNotification()
+        } 
+        catch(error)
+        {
+            this.notifyErrorToastNotification(error)
+        }
+    }
+    
+    /**
+    * Save the notification 
+    */
+    
+    notifySuccessToastNotification()
+    {
+        this.toastObj.show({
+            title: 'Grid Tool',
+            content: "Grid guardada con exito",
+            icon: 'e-save',
+        });
+    }
+    /**
+    * Save the notification.
+    * @param {*} error error to be notified. 
+    */
+    notifyErrorToastNotification(error)
+    {
+        this.toastObj.show({
+            title: 'Grid Tool',
+            content: error,
+            icon: 'e-save',
+        });
+    }
+    
     render() {
         this.rowSelected = this.rowSelected.bind(this);
         this.rowDoubleClick = this.rowDoubleClick.bind(this)
         this.loadDefault = this.loadDefault.bind(this)
         return (
-            <GridComponent id={this.state.name} dataSource={this.state.data} 
+            <div className="modalext">
+            <ToastComponent ref={(toast) => { this.toastObj = toast }}
+                            id='toast_default_extended'
+                            position={this.toastPosition}
+                            close={this.onToastClose.bind(this)}>
+            </ToastComponent>
+               
+                <ButtonComponent cssClass='e-primary'
+                                 onClick={this.saveGridSettings}>
+                        Guarda Impostaciones</ButtonComponent>
+                    <GridComponent id={this.state.name} dataSource={this.state.data} 
                            ref={g => this.grid = g} 
-                enableVirtualization={false}
+                    enableVirtualization={false}
+                    
                 allowPaging={true}
+                allowSorting={true}
+                allowReordering={true}
                 load={this.loadDefault}
                 allowFiltering={true}
-                filterSettings={this.filterSettings}
+                allowResizing={true}
+                filterSettings={this.filterOptions}
                 columns={this.state.columns}
                 recordDoubleClick={this.rowDoubleClick}
                 rowSelected={this.rowSelected}>
-                <Inject services={[Page, Selection, Filter, Sort, Reorder, Resize ]}  />
-                        </GridComponent>
+                    <Inject services={[Filter, Sort, Page, Selection, Resize, Reorder]}  />
+                </GridComponent>
+                </div>
+                
                 );
     }
 }

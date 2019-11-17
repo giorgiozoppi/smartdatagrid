@@ -9,7 +9,7 @@
 */
 
 import "grpc-web";
-import "./generated_code/UserConfig_pb.js"
+import "../generated_code/UserConfig_pb.js"
 import { UserConfigurationServiceClient } from "./generated_code/UserConfig_grpc_web_pb.js"
 
 class GridSettingSaver
@@ -31,7 +31,7 @@ class GridSettingSaver
     * @param {*} gridName     Name of a grid.
     * @param {*} gridInstance Instance of a grid.
     */
-    saveGridAsync(gridName, gridInstance)
+    saveGridAsync(gridName, gridInstance, template)
     {
         console.log("GRPC Gateway " + this.grpcGateway)
         let service = new UserConfigurationServiceClient(this.grpcGateway)
@@ -51,12 +51,11 @@ class GridSettingSaver
                     } 
                     else {
                     if (response.getStatus() === 200) {
-                            console.log('Saved with success')
+                          
                              resolve(response);
                          } else 
                          {
                            let error = response.getErrormessage()
-                           console.log('Failed saved settings ' +error)
                            reject(error)
                         }
                     }
@@ -64,6 +63,31 @@ class GridSettingSaver
         });
     }
     
+
+    _serializeGridWithTemplate(gridInstanc, template)
+    {
+            
+            let model = gridInstance.getPersistData();
+           
+            let cols = gridInstance.columns;
+            let jsonModel = JSON.parse(model)
+            let modelCols = jsonModel["columns"]
+            let idx = 0;
+            modelCols.forEach(modelCol => {
+            modelCol["headerText"] = cols[idx].headerText;
+            idx++
+            })
+
+            let templateCol = 0;
+            modelCols.forEach(modelCol=>{
+                modelCol[tem]
+                templateCol = templateCol +1;
+            })
+
+
+            model = JSON.stringify(jsonModel)
+            return model
+    }
     /** private method. In ES6 there is no private method we use this convention */
     /**
      * @param gridInstance 
@@ -75,6 +99,8 @@ class GridSettingSaver
         {
             throw 'Null grid to be serialized'
         }
+
+       
         let model = gridInstance.getPersistData();
         let cols = gridInstance.columns;
         let jsonModel = JSON.parse(model)

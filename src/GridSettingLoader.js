@@ -57,8 +57,12 @@ class GridSettingLoader
                                     let model = atob(bsonSerialized);
                                     console.log("Model from JSON Ok :" + model)
                                     let data = new ej.data.DataUtil.parse.parseJson(model);
-                                    console.log("Setting inst properties")
+                                    // deep copy
+                                   
+
+                                   
                                     if (gridInstance != null) {
+                                        console.log("Setting inst properties")
                                         gridInstance.setProperties(data);
                                         console.log("Model set");
                                         gridInstance.refresh();
@@ -90,12 +94,14 @@ class GridSettingLoader
         let model = gridInstance.getPersistData();
         let cols = gridInstance.columns;
         let jsonModel = JSON.parse(model)
+        console.log("Model" + JSON.stringify(jsonModel))
         let modelCols = jsonModel["columns"]
         let idx = 0;
         modelCols.forEach(modelCol => {
             modelCol["headerText"] = cols[idx].headerText;
             idx++
         })
+
         model = JSON.stringify(jsonModel)
         return model
     }

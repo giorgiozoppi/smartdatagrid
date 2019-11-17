@@ -8,5 +8,5 @@
     task generateParser(type:JavaExec) {
        main = 'org.antlr.v4.Tool'
        classpath = sourceSets.main.runtimeClasspath
-       args = ['-Dlanguage=JavaScript', 'formula.g4', '-o', 'static/generated-parser']
+       args = ['-Dlanguage=JavaScript', 'grid_formula.g4']
     }

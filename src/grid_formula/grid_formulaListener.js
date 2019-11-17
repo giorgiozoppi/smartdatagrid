@@ -1,4 +1,4 @@
-// Generated from grid_formula.g4 by ANTLR 4.7.2
+// Generated from grid_formula.g4 by ANTLR 4.5.1
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 
@@ -26,24 +26,6 @@ grid_formulaListener.prototype.enterFormula = function(ctx) {
 
 // Exit a parse tree produced by grid_formulaParser#formula.
 grid_formulaListener.prototype.exitFormula = function(ctx) {
-};
-
-
-// Enter a parse tree produced by grid_formulaParser#baseformula.
-grid_formulaListener.prototype.enterBaseformula = function(ctx) {
-};
-
-// Exit a parse tree produced by grid_formulaParser#baseformula.
-grid_formulaListener.prototype.exitBaseformula = function(ctx) {
-};
-
-
-// Enter a parse tree produced by grid_formulaParser#emptyLine.
-grid_formulaListener.prototype.enterEmptyLine = function(ctx) {
-};
-
-// Exit a parse tree produced by grid_formulaParser#emptyLine.
-grid_formulaListener.prototype.exitEmptyLine = function(ctx) {
 };
 
 
