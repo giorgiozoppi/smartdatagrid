@@ -277,7 +277,3 @@ grammar grid_formula;
 
 ```
 
-
-
-                
->>>>>>> bbbb7cc27b3e632d96d2a5d092dff2757f4c620c
